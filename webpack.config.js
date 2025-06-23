@@ -13,6 +13,20 @@ module.exports = (webpackConfigEnv, argv) => {
   });
 
   return merge(defaultConfig, {
+    devServer: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/auth': {
+          target: 'http://localhost',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
     plugins: [
       new HtmlWebpackPlugin({
         inject: false,
