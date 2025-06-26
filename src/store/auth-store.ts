@@ -8,7 +8,7 @@ import {
 
 const userStore = new WebStorageStateStore({ store: window.localStorage });
 
-class AuthStore {
+export class AuthStore {
   user: User | undefined;
   isLoading = true;
   error: Error | undefined;

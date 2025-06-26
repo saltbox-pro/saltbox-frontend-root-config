@@ -1,5 +1,5 @@
 import { registerApplication, start } from "single-spa";
-import { authStore } from "./auth-store";
+import { authStore } from "./store/auth-store";
 import { containerTracker } from "./container-tracker";
 
 export interface MenuItem {
