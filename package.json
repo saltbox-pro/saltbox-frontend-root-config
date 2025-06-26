@@ -1,6 +1,7 @@
 {
   "name": "saltbox-frontend-root-config",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "webpack serve --port 4200 --env isLocal",
     "lint": "eslint src --ext js,ts,tsx",
