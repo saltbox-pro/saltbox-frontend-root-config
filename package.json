@@ -10,7 +10,8 @@
     "check-format": "prettier --check .",
     "build": "concurrently yarn:build:*",
     "build:webpack": "webpack --mode=production",
-    "build:types": "tsc"
+    "build:types": "tsc",
+    "live": "npx http-server ./dist -p 4200 --cors"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",

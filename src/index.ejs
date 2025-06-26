@@ -31,20 +31,31 @@
 
   <% if (isLocal) { %>
     <script type="injector-importmap">
-    {
-      "imports": {
-        "saltbox-frontend-root-config": "//localhost:4200/saltbox-root-config.js",
-        "saltbox-frontend-base": "//localhost:4201/saltbox-base.js",
-        "saltbox-frontend-core": "//localhost:4202/saltbox-core.js",
-        "saltbox-frontend-flow": "//localhost:4203/saltbox-flow.js"
+      {
+        "imports": {
+          "saltbox-frontend-root-config": "//localhost:4200/saltbox-root-config.js",
+          "saltbox-frontend-base": "//localhost:4201/saltbox-base.js",
+          "saltbox-frontend-core": "//localhost:4202/saltbox-core.js",
+          "saltbox-frontend-flow": "//localhost:4203/saltbox-flow.js"
+        }
       }
-    }
-  </script>
-    <% } %>
+    </script>
+    <% } else { %>
+      <script type="injector-importmap">
+      {
+        "imports": {
+          "saltbox-frontend-root-config": "http://localhost:4200/saltbox-root-config.js",
+          "saltbox-frontend-base": "http://localhost:4201/saltbox-base.js",
+          "saltbox-frontend-core": "http://localhost:4202/saltbox-core.js",
+          "saltbox-frontend-flow": "http://localhost:4203/saltbox-flow.js"
+        }
+      }
+    </script>
+      <% } %>
 
-      <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@5.1.1/dist/import-map-overrides.js"></script>
-      <script
-        src="https://cdn.jsdelivr.net/npm/@single-spa/import-map-injector@2.0.1/lib/import-map-injector.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@5.1.1/dist/import-map-overrides.js"></script>
+        <script
+          src="https://cdn.jsdelivr.net/npm/@single-spa/import-map-injector@2.0.1/lib/import-map-injector.js"></script>
 </head>
 
 <body style="width: 100%; height: 100%; margin: 0; padding: 0;">
