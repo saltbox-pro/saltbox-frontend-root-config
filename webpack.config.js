@@ -14,7 +14,7 @@ module.exports = (webpackConfigEnv, argv) => {
     disableHtmlGeneration: true,
   });
 
-  return merge(defaultConfig, {
+  const config = merge(defaultConfig, {
     devServer: {
       proxy: {
         '/api': {
@@ -50,4 +50,8 @@ module.exports = (webpackConfigEnv, argv) => {
       }),
     ],
   });
+
+  config.externals = [];
+
+  return config;
 };
