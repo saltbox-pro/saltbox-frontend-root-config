@@ -1,47 +1,36 @@
 import { registerApplication, start } from "single-spa";
 import { authStore } from "./store/auth-store";
 import { containerTracker } from "./container-tracker";
+import { runInAction } from "mobx";
+import { menuStore } from "./store/menu-store";
 
-export interface MenuItem {
-  key: string;
-  label: string;
-  path?: string;
-  children?: MenuItem[];
-}
-
-export const menuConfig: MenuItem[] = [];
-
-export const addMenuConfig = (config: MenuItem) => {
-  menuConfig.push(config);
+const mainConfig = {
+  authConfig: {
+    authority: "https://demo.saltbox.pro/auth/keycloak/realms/salt.box",
+    client_id: "saltbox_core",
+    redirect_uri: "http://localhost:4200",
+    client_secret: "gKyKTi1QXTyfAbqK",
+  },
+  modules: [
+    {
+      name: "saltbox-frontend-core",
+      path: "/core",
+      env: {
+        apiBasePath: "https://demo.saltbox.pro/api/core",
+        wsServerUrl: "wss://demo.saltbox.pro/api/core",
+      },
+    },
+    {
+      name: "saltbox-frontend-flow",
+      path: "/flow",
+    },
+  ],
 };
 
-const modules = [
-  {
-    name: "saltbox-frontend-core",
-    path: "/core",
-  },
-  {
-    name: "saltbox-frontend-flow",
-    path: "/flow",
-  },
-];
-
-const loadMainApps = async () => {
-  const loadedModules = new Map();
-
-  const loadPromises = modules.map((module) =>
-    import(
-      /* webpackIgnore: true */ // @ts-ignore-next
-      module.name
-    ).then((app) => {
-      if (app.meta?.menuConfig) {
-        addMenuConfig(app.meta.menuConfig);
-      }
-      loadedModules.set(module.name, app);
-    })
-  );
-
-  await Promise.all(loadPromises);
+const loadBase = () => {
+  runInAction(() => {
+    authStore.userConfig = mainConfig.authConfig;
+  });
 
   registerApplication({
     name: "saltbox-frontend-base",
@@ -50,28 +39,42 @@ const loadMainApps = async () => {
         /* webpackIgnore: true */ // @ts-ignore-next
         "saltbox-frontend-base"
       ),
-    customProps: { menuConfig, authStore },
+    customProps: { menuStore, authStore },
     activeWhen: ["/"],
   });
-
   // Запускаем single-spa
   start({
     urlRerouteOnly: true,
   });
-
-  try {
-    await containerTracker.waitForContainer("app-container");
-    modules.forEach((module) => {
-      registerApplication({
-        name: module.name,
-        app: () => Promise.resolve(loadedModules.get(module.name)),
-        customProps: { authStore },
-        activeWhen: [module.path],
-      });
-    });
-  } catch (error) {
-    console.error("Failed to wait for app container:", error);
-  }
+  loadModules();
 };
 
-loadMainApps();
+const loadModules = async () => {
+  mainConfig.modules.map((module) =>
+    import(
+      /* webpackIgnore: true */ // @ts-ignore-next
+      module.name
+    )
+      .then(async (impotedModule) => {
+        if (impotedModule.meta?.menuConfig) {
+          menuStore.addMenuItem(impotedModule.meta.menuConfig);
+        }
+        await containerTracker.waitForContainer("app-container");
+        registerApplication({
+          name: module.name,
+          app: {
+            bootstrap: impotedModule.bootstrap,
+            mount: impotedModule.mount,
+            unmount: impotedModule.unmount,
+          },
+          customProps: { authStore, env: module.env },
+          activeWhen: [module.path],
+        });
+      })
+      .catch((error) =>
+        console.error("Failed to wait for app container:", error)
+      )
+  );
+};
+
+loadBase();

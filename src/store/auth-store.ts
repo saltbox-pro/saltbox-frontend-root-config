@@ -142,12 +142,3 @@ export class AuthStore {
 }
 
 export const authStore = new AuthStore();
-
-runInAction(() => {
-  authStore.userConfig = {
-    authority: "http://localhost/auth/keycloak/realms/salt.box",
-    client_id: "saltbox_core",
-    redirect_uri: "http://localhost:4200",
-    client_secret: "PWldvmaA9IW1tHLP",
-  };
-});
