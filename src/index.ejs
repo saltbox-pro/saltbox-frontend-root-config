@@ -1,56 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SALTBOX</title>
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:* wss://*; style-src 'unsafe-inline' https:; object-src 'none';">
-  <meta name="importmap-type" use-injector />
-
-  <% if (isLocal) { %>
-    <script type="injector-importmap">
-      {
-        "imports": {
-          "saltbox-frontend-root-config": "//localhost:4200/saltbox-root-config.js",
-          "saltbox-frontend-base": "//localhost:4201/saltbox-base.js",
-          "saltbox-frontend-core": "//localhost:4202/saltbox-core.js",
-          "saltbox-frontend-flow": "//localhost:4203/saltbox-flow.js",
-          "saltbox-frontend-shared": "//localhost:4210/saltbox-shared.js"
-        }
-      }
-    </script>
-    <% } else { %>
-      <script type="injector-importmap">
-      {
-        "imports": {
-          "saltbox-frontend-root-config": "http://localhost:4200/saltbox-root-config.js",
-          "saltbox-frontend-base": "http://localhost:4201/saltbox-base.js",
-          "saltbox-frontend-core": "http://localhost:4202/saltbox-core.js",
-          "saltbox-frontend-flow": "http://localhost:4203/saltbox-flow.js",
-          "saltbox-frontend-shared": "http://localhost:4210/saltbox-shared.js"
-        }
-      }
-    </script>
-      <% } %>
-
-        <script src="http://localhost:4210/import-map-overrides@6.0.1/dist/import-map-overrides.js"></script>
-        <script src="http://localhost:4210/@single-spa/import-map-injector@2.0.2/lib/import-map-injector.js"></script>
-</head>
-
-<body style="width: 100%; height: 100%; margin: 0; padding: 0;">
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <main></main>
-  <script>
-    window.importMapInjector.initPromise.then((...props) => {
-      import('saltbox-frontend-root-config');
-    });
-  </script>
-  <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
-</body>
-
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>SALTBOX</title>
+        <meta
+                http-equiv="Content-Security-Policy"
+                content="
+                    default-src 'self' https: localhost:*;
+                    script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*;
+                    connect-src https: localhost:* ws://localhost:* wss://*;
+                    style-src 'unsafe-inline' https:;
+                    object-src 'none';
+                "
+        >
+    </head>
+    <body style="width: 100%; height: 100%; margin: 0; padding: 0;">
+        <noscript>
+            You need to enable JavaScript to run this app.
+        </noscript>
+        <main></main>
+        <script>
+            import('/saltbox-root-config.js');
+        </script>
+    </body>
 </html>
