@@ -6,18 +6,18 @@ import { menuStore } from "./store/menu-store";
 
 const mainConfig = {
   authConfig: {
-    authority: "https://demo.saltbox.pro/auth/keycloak/realms/salt.box",
+    authority: "http://localhost/auth/keycloak/realms/salt.box",
     client_id: "saltbox_core",
     redirect_uri: "http://localhost:4200",
-    client_secret: "gKyKTi1QXTyfAbqK",
+    client_secret: "PWldvmaA9IW1tHLP",
   },
   modules: [
     {
       name: "saltbox-frontend-core",
       path: "/core",
       env: {
-        apiBasePath: "https://demo.saltbox.pro/api/core",
-        wsServerUrl: "wss://demo.saltbox.pro/api/core",
+        apiBasePath: "http://localhost/api/core",
+        wsServerUrl: "wss://localhost/api/core",
       },
     },
     {
