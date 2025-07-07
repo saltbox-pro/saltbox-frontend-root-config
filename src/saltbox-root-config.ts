@@ -13,16 +13,14 @@ const mainConfig = {
   },
   modules: [
     {
-      name: "saltbox-frontend-core",
-      path: "/core",
+      url: "http://localhost:4202/saltbox-core.js",
       env: {
         apiBasePath: "http://localhost/api/core",
         wsServerUrl: "wss://localhost/api/core",
       },
     },
     {
-      name: "saltbox-frontend-flow",
-      path: "/flow",
+      url: "http://localhost:4203/saltbox-flow.js",
     },
   ],
 };
@@ -37,12 +35,11 @@ const loadBase = () => {
     app: () =>
       import(
         /* webpackIgnore: true */ // @ts-ignore-next
-        "saltbox-frontend-base"
+        "http://localhost:4201/saltbox-base.js"
       ),
     customProps: { menuStore, authStore },
     activeWhen: ["/"],
   });
-  // Запускаем single-spa
   start({
     urlRerouteOnly: true,
   });
@@ -53,7 +50,7 @@ const loadModules = async () => {
   mainConfig.modules.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
-      module.name
+      module.url
     )
       .then(async (impotedModule) => {
         if (impotedModule.meta?.menuConfig) {
@@ -61,14 +58,14 @@ const loadModules = async () => {
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({
-          name: module.name,
+          name: impotedModule.meta.name,
           app: {
             bootstrap: impotedModule.bootstrap,
             mount: impotedModule.mount,
             unmount: impotedModule.unmount,
           },
           customProps: { authStore, env: module.env },
-          activeWhen: [module.path],
+          activeWhen: [impotedModule.meta.path],
         });
       })
       .catch((error) =>
