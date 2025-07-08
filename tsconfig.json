@@ -1,7 +1,16 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "ts-config-single-spa",
   "compilerOptions": {
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "target": "es2022",
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "declaration": true,
+    "baseUrl": "."
   },
   "include": [
     "src/**/*"
