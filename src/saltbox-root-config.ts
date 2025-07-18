@@ -43,7 +43,7 @@ const loadBase = () => {
     })
     .then((mainConfig) => {
       runInAction(() => {
-        authStore.userConfig = mainConfig.authConfig;
+        authStore.userConfig = mainConfig.auth_config;
       });
       loadModules(mainConfig);
     });
