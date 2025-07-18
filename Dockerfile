@@ -18,7 +18,7 @@ RUN \
 set -e
 mkdir --parents /var/cache/apt/archives/partial/ /var/lib/apt/lists/partial/
 apt-get update
-apt-get install -y gcc yarn
+apt-get install -y gcc yarn npm
 EOF
 
 WORKDIR /root/saltbox-frontend-root-config/
