@@ -50,7 +50,7 @@ const loadBase = () => {
 };
 
 const loadModules = async (mainConfig: any) => {
-  mainConfig.modules.map((module) =>
+  mainConfig.services.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
       module.url
