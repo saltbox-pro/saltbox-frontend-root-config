@@ -53,7 +53,7 @@ const loadModules = async (mainConfig: any) => {
   mainConfig.services.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
-      module.url
+      module.url + "/index.js"
     )
       .then(async (impotedModule) => {
         if (impotedModule.meta?.menuConfig) {
