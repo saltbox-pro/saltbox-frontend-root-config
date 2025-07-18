@@ -33,7 +33,7 @@ const loadBase = () => {
     app: () =>
       import(
         /* webpackIgnore: true */ // @ts-ignore-next
-        "http://localhost:4201/index.js"
+        "/static/base/index.js"
       ),
     customProps: { menuStore, authStore, localeStore },
     activeWhen: ["/"],
