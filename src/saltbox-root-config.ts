@@ -7,21 +7,18 @@ import { localeStore } from "./store/locale-store";
 
 const mainConfig = {
   authConfig: {
-    authority: "https://demo.saltbox.pro/auth/keycloak/realms/salt.box",
+    authority: "http://localhost/auth/keycloak/realms/salt.box",
     client_id: "saltbox_core",
-    client_secret: "gKyKTi1QXTyfAbqK",
-    redirect_uri: "https://demo.saltbox.pro",
+    client_secret: "PWldvmaA9IW1tHLP",
+    redirect_uri: "http://localhost:4200",
   },
   modules: [
     {
-      url: "http://localhost:4202/saltbox-core.js",
+      url: "http://localhost:4202/index.js",
       env: {
-        apiBasePath: "https://demo.saltbox.pro/api/core",
+        apiBasePath: "http://localhost/api/core",
         wsServerUrl: "wss://demo.saltbox.pro/api/core",
       },
-    },
-    {
-      url: "http://localhost:4203/saltbox-flow.js",
     },
   ],
 };
@@ -36,7 +33,7 @@ const loadBase = () => {
     app: () =>
       import(
         /* webpackIgnore: true */ // @ts-ignore-next
-        "http://localhost:4201/saltbox-base.js"
+        "http://localhost:4201/index.js"
       ),
     customProps: { menuStore, authStore, localeStore },
     activeWhen: ["/"],

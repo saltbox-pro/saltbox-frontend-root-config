@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>SALTBOX</title>
-        <meta
-                http-equiv="Content-Security-Policy"
-                content="
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SALTBOX</title>
+    <meta http-equiv="Content-Security-Policy" content="
                     default-src 'self' https: localhost:*;
                     script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*;
                     connect-src https: localhost:* ws://localhost:* wss://*;
                     style-src 'unsafe-inline' https:;
                     object-src 'none';
-                "
-        >
-    </head>
-    <body style="width: 100%; height: 100%; margin: 0; padding: 0;">
-        <noscript>
-            You need to enable JavaScript to run this app.
-        </noscript>
-        <main></main>
-        <script>
-            import('/saltbox-root-config.js');
-        </script>
-    </body>
+                ">
+</head>
+
+<body style="width: 100%; height: 100%; margin: 0; padding: 0;">
+    <noscript>
+        You need to enable JavaScript to run this app.
+    </noscript>
+    <main></main>
+    <script>
+        import('/saltbox-root-config.js');
+    </script>
+</body>
+
 </html>
