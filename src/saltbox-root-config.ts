@@ -3,20 +3,21 @@ import { authStore } from "./store/auth-store";
 import { containerTracker } from "./container-tracker";
 import { runInAction } from "mobx";
 import { menuStore } from "./store/menu-store";
+import { localeStore } from "./store/locale-store";
 
 const mainConfig = {
   authConfig: {
-    authority: "http://localhost/auth/keycloak/realms/salt.box",
+    authority: "https://demo.saltbox.pro/auth/keycloak/realms/salt.box",
     client_id: "saltbox_core",
-    redirect_uri: "http://localhost:4200",
-    client_secret: "PWldvmaA9IW1tHLP",
+    client_secret: "gKyKTi1QXTyfAbqK",
+    redirect_uri: "https://demo.saltbox.pro",
   },
   modules: [
     {
       url: "http://localhost:4202/saltbox-core.js",
       env: {
-        apiBasePath: "http://localhost/api/core",
-        wsServerUrl: "wss://localhost/api/core",
+        apiBasePath: "https://demo.saltbox.pro/api/core",
+        wsServerUrl: "wss://demo.saltbox.pro/api/core",
       },
     },
     {
@@ -37,7 +38,7 @@ const loadBase = () => {
         /* webpackIgnore: true */ // @ts-ignore-next
         "http://localhost:4201/saltbox-base.js"
       ),
-    customProps: { menuStore, authStore },
+    customProps: { menuStore, authStore, localeStore },
     activeWhen: ["/"],
   });
   start({
@@ -64,7 +65,7 @@ const loadModules = async () => {
             mount: impotedModule.mount,
             unmount: impotedModule.unmount,
           },
-          customProps: { authStore, env: module.env },
+          customProps: { authStore, env: module.env, localeStore },
           activeWhen: [impotedModule.meta.path],
         });
       })
