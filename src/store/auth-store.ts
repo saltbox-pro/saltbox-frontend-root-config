@@ -15,6 +15,7 @@ export class AuthStore {
   userConfig: UserManagerSettings | undefined;
   private userPromise: Promise<User> | undefined;
   isSignOut: boolean = false;
+  private _userManager: UserManager | undefined;
 
   get mergedConfig(): UserManagerSettings | undefined {
     if (!this.userConfig) return undefined;
@@ -27,28 +28,30 @@ export class AuthStore {
 
   get userManager(): UserManager | undefined {
     if (!this.mergedConfig) return undefined;
-    const userManager = new UserManager(this.mergedConfig);
+    if (!this._userManager) {
+      this._userManager = new UserManager(this.mergedConfig);
 
-    userManager.events.addUserLoaded((user) => {
-      runInAction(() => {
-        this.user = user;
-        this.error = undefined;
+      this._userManager.events.addUserLoaded((user) => {
+        runInAction(() => {
+          this.user = user;
+          this.error = undefined;
+        });
       });
-    });
 
-    userManager.events.addUserUnloaded(() => {
-      runInAction(() => {
-        this.user = undefined;
+      this._userManager.events.addUserUnloaded(() => {
+        runInAction(() => {
+          this.user = undefined;
+        });
       });
-    });
 
-    userManager.events.addSilentRenewError((error) => {
-      runInAction(() => {
-        this.error = error;
+      this._userManager.events.addSilentRenewError((error) => {
+        runInAction(() => {
+          this.error = error;
+        });
       });
-    });
+    }
 
-    return userManager;
+    return this._userManager;
   }
 
   get isAuthenticated() {
