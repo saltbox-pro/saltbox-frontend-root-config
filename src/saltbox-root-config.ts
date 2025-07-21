@@ -1,7 +1,6 @@
 import { registerApplication, start } from "single-spa";
 import { authStore } from "./store/auth-store";
 import { containerTracker } from "./container-tracker";
-import { runInAction } from "mobx";
 import { menuStore } from "./store/menu-store";
 import { localeStore } from "./store/locale-store";
 
@@ -42,9 +41,7 @@ const loadBase = () => {
       return response.json();
     })
     .then((mainConfig) => {
-      runInAction(() => {
-        authStore.userConfig = mainConfig.auth_config;
-      });
+      authStore.setUserConfig(mainConfig.auth_config);
       loadModules(mainConfig);
     });
 };

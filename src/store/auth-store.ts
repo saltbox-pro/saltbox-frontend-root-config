@@ -1,4 +1,10 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 import {
   User,
   UserManager,
@@ -9,15 +15,15 @@ import {
 const userStore = new WebStorageStateStore({ store: window.localStorage });
 
 export class AuthStore {
-  user: User | undefined;
-  isLoading = true;
-  error: Error | undefined;
-  userConfig: UserManagerSettings | undefined;
-  private userPromise: Promise<User> | undefined;
-  isSignOut: boolean = false;
-  private _userManager: UserManager | undefined;
+  @observable user: User | undefined;
+  @observable isLoading = true;
+  @observable error: Error | undefined;
+  @observable userConfig: UserManagerSettings | undefined;
+  @observable private userPromise: Promise<User> | undefined;
+  @observable isSignOut: boolean = false;
+  @observable private _userManager: UserManager | undefined;
 
-  get mergedConfig(): UserManagerSettings | undefined {
+  @computed get mergedConfig(): UserManagerSettings | undefined {
     if (!this.userConfig) return undefined;
     return {
       automaticSilentRenew: true,
@@ -26,7 +32,7 @@ export class AuthStore {
     };
   }
 
-  get userManager(): UserManager | undefined {
+  @computed get userManager(): UserManager | undefined {
     if (!this.mergedConfig) return undefined;
     if (!this._userManager) {
       this._userManager = new UserManager(this.mergedConfig);
@@ -54,15 +60,15 @@ export class AuthStore {
     return this._userManager;
   }
 
-  get isAuthenticated() {
+  @computed get isAuthenticated() {
     return !!this.user && !this.user.expired;
   }
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this);
   }
 
-  private async initialize() {
+  @action private async initialize() {
     if (!this.userManager) return;
     try {
       const user = await this.userManager.getUser();
@@ -78,7 +84,7 @@ export class AuthStore {
     }
   }
 
-  async signIn(redirectURI?: string) {
+  @action async signIn(redirectURI?: string) {
     if (!this.userManager) return;
     try {
       this.isLoading = true;
@@ -95,7 +101,7 @@ export class AuthStore {
     }
   }
 
-  async signOut(redirectURI?: string) {
+  @action async signOut(redirectURI?: string) {
     if (!this.userManager) return;
     try {
       this.isSignOut = true;
@@ -113,7 +119,7 @@ export class AuthStore {
     }
   }
 
-  handleSigninRedirectCallback() {
+  @action handleSigninRedirectCallback() {
     if (!this.userManager || this.userPromise) return;
     this.isLoading = true;
     return new Promise((resolve, reject) => {
@@ -141,6 +147,10 @@ export class AuthStore {
           });
         });
     });
+  }
+
+  @action setUserConfig(config: UserManagerSettings) {
+    this.userConfig = config;
   }
 }
 
