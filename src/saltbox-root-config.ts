@@ -4,31 +4,26 @@ import { containerTracker } from "./container-tracker";
 import { menuStore } from "./store/menu-store";
 import { localeStore } from "./store/locale-store";
 
-// const mainConfig = {
-//   authConfig: {
-//     authority: "http://localhost/auth/keycloak/realms/salt.box",
-//     client_id: "saltbox_core",
-//     client_secret: "PWldvmaA9IW1tHLP",
-//     redirect_uri: "http://localhost:4200",
-//   },
-//   modules: [
-//     {
-//       url: "http://localhost:4202/index.js",
-//       env: {
-//         apiBasePath: "http://localhost/api/core",
-//         wsServerUrl: "wss://demo.saltbox.pro/api/core",
-//       },
-//     },
-//   ],
-// };
+let saltboxMainConfig;
+let saltboxBaseUrl = "/static/base/index.js";
 
-const loadBase = () => {
+if (DEVELOPMENT) {
+  const config = await import("../config.dev");
+  if (config?.saltboxMainConfig) {
+    saltboxMainConfig = config.saltboxMainConfig;
+  }
+  if (config?.saltboxBaseUrl) {
+    saltboxBaseUrl = config.saltboxBaseUrl;
+  }
+}
+
+const loadBase = (baseFrontendUrl: string, mainConfig: any | undefined) => {
   registerApplication({
     name: "saltbox-frontend-base",
     app: () =>
       import(
         /* webpackIgnore: true */ // @ts-ignore-next
-        "/static/base/index.js"
+        baseFrontendUrl
       ),
     customProps: { menuStore, authStore, localeStore },
     activeWhen: ["/"],
@@ -40,9 +35,14 @@ const loadBase = () => {
     .then((response) => {
       return response.json();
     })
-    .then((mainConfig) => {
-      authStore.setUserConfig(mainConfig.auth_config);
-      loadModules(mainConfig);
+    .then((config) => {
+      if (mainConfig) {
+        authStore.setUserConfig(mainConfig.auth_config);
+        loadModules(mainConfig);
+      } else {
+        authStore.setUserConfig(config.auth_config);
+        loadModules(config);
+      }
     });
 };
 
@@ -74,4 +74,4 @@ const loadModules = async (mainConfig: any) => {
   );
 };
 
-loadBase();
+loadBase(saltboxBaseUrl, saltboxMainConfig);

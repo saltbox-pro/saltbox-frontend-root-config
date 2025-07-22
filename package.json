@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "license": "Apache-2.0",
   "scripts": {
-    "start": "webpack serve --port 4200 --env isLocal",
+    "start": "webpack serve --port 4200 --env isLocal --mode=development",
     "lint": "eslint src --ext js,ts,tsx",
     "format": "prettier --write .",
     "check-format": "prettier --check .",

@@ -1,5 +1,5 @@
 const { merge } = require("webpack-merge");
-const path = require("path");
+const webpack = require('webpack');
 const singleSpaDefaults = require("webpack-config-single-spa-ts");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -29,14 +29,6 @@ module.exports = (webpackConfigEnv, argv) => {
         },
       },
     },
-    resolve: {
-      alias: {
-        "saltbox-core-api": path.resolve(__dirname, "../saltbox-frontend-core/src/api/generated"),
-        "saltbox-core": path.resolve(__dirname, "../saltbox-frontend-core/src"),
-        "saltbox-base": path.resolve(__dirname, "../saltbox-frontend-base/src"),
-        "saltbox-root-config": path.resolve(__dirname, "../saltbox-frontend-root-config/src"),
-      },
-    },
     plugins: [
       new HtmlWebpackPlugin({
         inject: false,
@@ -45,6 +37,10 @@ module.exports = (webpackConfigEnv, argv) => {
           isLocal: webpackConfigEnv && webpackConfigEnv.isLocal,
           orgName,
         },
+      }),
+      new webpack.DefinePlugin({
+        DEVELOPMENT: argv.mode === 'development',
+        PRODUCTION: argv.mode === 'production',
       }),
     ],
   });
