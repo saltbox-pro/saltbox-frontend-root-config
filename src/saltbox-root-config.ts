@@ -8,6 +8,7 @@ let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
 
 if (DEVELOPMENT) {
+  // @ts-ignore-next-line
   const config = await import("../config.dev");
   if (config?.saltboxMainConfig) {
     saltboxMainConfig = config.saltboxMainConfig;
