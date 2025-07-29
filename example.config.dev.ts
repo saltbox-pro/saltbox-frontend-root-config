@@ -1,5 +1,7 @@
 export const saltboxBaseUrl = "http://localhost:4201/index.js";
 
+export const saltboxDiscoveryUrl = "/api/discovery/config";
+
 export const saltboxMainConfig = {
     "auth_config": {
         "authority": "http://localhost/auth/keycloak/realms/salt.box",

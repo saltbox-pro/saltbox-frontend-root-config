@@ -6,19 +6,21 @@ import { localeStore } from "./store/locale-store";
 
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
+let saltboxDiscoveryUrl = "/api/discovery/config";
 
-if (DEVELOPMENT) {
-  // @ts-ignore-next-line
-  const config = await import("../config.dev");
-  if (config?.saltboxMainConfig) {
-    saltboxMainConfig = config.saltboxMainConfig;
+if (DEVELOPMENT && CONFIGURATION) {
+  if (CONFIGURATION?.saltboxMainConfig) {
+    saltboxMainConfig = CONFIGURATION.saltboxMainConfig;
   }
-  if (config?.saltboxBaseUrl) {
-    saltboxBaseUrl = config.saltboxBaseUrl;
+  if (CONFIGURATION?.saltboxBaseUrl) {
+    saltboxBaseUrl = CONFIGURATION.saltboxBaseUrl;
+  }
+  if (CONFIGURATION?.saltboxDiscoveryUrl) {
+    saltboxDiscoveryUrl = CONFIGURATION.saltboxDiscoveryUrl;
   }
 }
 
-const loadBase = (baseFrontendUrl: string, mainConfig: any | undefined) => {
+const loadBase = (baseFrontendUrl: string, saltboxDiscoveryUrl: string, mainConfig: any | undefined) => {
   registerApplication({
     name: "saltbox-frontend-base",
     app: () =>
@@ -32,7 +34,7 @@ const loadBase = (baseFrontendUrl: string, mainConfig: any | undefined) => {
   start({
     urlRerouteOnly: true,
   });
-  fetch("/api/discovery/config")
+  fetch(saltboxDiscoveryUrl)
     .then((response) => {
       return response.json();
     })
@@ -75,4 +77,4 @@ const loadModules = async (mainConfig: any) => {
   );
 };
 
-loadBase(saltboxBaseUrl, saltboxMainConfig);
+loadBase(saltboxBaseUrl, saltboxDiscoveryUrl, saltboxMainConfig);
