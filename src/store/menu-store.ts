@@ -10,6 +10,7 @@ export interface MenuItem {
 
 export class MenuStore {
   menu: MenuItem[] = [];
+  settings: MenuItem[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -17,6 +18,10 @@ export class MenuStore {
 
   addMenuItem(menuItem: MenuItem) {
     this.menu.push(menuItem);
+  }
+
+  addSettingsItem(menuItem: MenuItem) {
+    this.settings.push(menuItem);
   }
 }
 

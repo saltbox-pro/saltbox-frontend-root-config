@@ -20,7 +20,11 @@ if (DEVELOPMENT && CONFIGURATION) {
   }
 }
 
-const loadBase = (baseFrontendUrl: string, saltboxDiscoveryUrl: string, mainConfig: any | undefined) => {
+const loadBase = (
+  baseFrontendUrl: string,
+  saltboxDiscoveryUrl: string,
+  mainConfig: any | undefined
+) => {
   registerApplication({
     name: "saltbox-frontend-base",
     app: () =>
@@ -56,6 +60,9 @@ const loadModules = async (mainConfig: any) => {
       module.url + "/index.js"
     )
       .then(async (impotedModule) => {
+        if (impotedModule.meta.settingsConfig) {
+          menuStore.addSettingsItem(impotedModule.meta.settingsConfig);
+        }
         if (impotedModule.meta?.menuConfig) {
           menuStore.addMenuItem(impotedModule.meta.menuConfig);
         }
