@@ -66,6 +66,7 @@ const loadModules = async (mainConfig: any) => {
         if (impotedModule.meta?.menuConfig) {
           menuStore.addMenuItem(impotedModule.meta.menuConfig);
         }
+        impotedModule.meta.init(authStore, module.env, localeStore);
         await containerTracker.waitForContainer("app-container");
         registerApplication({
           name: impotedModule.meta.name,
@@ -74,7 +75,6 @@ const loadModules = async (mainConfig: any) => {
             mount: impotedModule.mount,
             unmount: impotedModule.unmount,
           },
-          customProps: { authStore, env: module.env, localeStore },
           activeWhen: [impotedModule.meta.path],
         });
       })
