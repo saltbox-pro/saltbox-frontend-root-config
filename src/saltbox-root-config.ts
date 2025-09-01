@@ -7,6 +7,7 @@ import { localeStore } from "./store/locale-store";
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
 let saltboxDiscoveryUrl = "/api/discovery/config";
+let saltboxGatewayUrl = "/static/gateway/index.js";
 
 if (DEVELOPMENT && CONFIGURATION) {
   if (CONFIGURATION?.saltboxMainConfig) {
@@ -38,18 +39,25 @@ const loadBase = (
   start({
     urlRerouteOnly: true,
   });
+  if (mainConfig) {
+    authStore.setUserConfig(mainConfig.auth_config);
+    loadModules(mainConfig);
+    return;
+  }
   fetch(saltboxDiscoveryUrl)
     .then((response) => {
       return response.json();
     })
     .then((config) => {
-      if (mainConfig) {
-        authStore.setUserConfig(mainConfig.auth_config);
-        loadModules(mainConfig);
-      } else {
-        authStore.setUserConfig(config.auth_config);
-        loadModules(config);
-      }
+      authStore.setUserConfig(config.auth_config);
+      mainConfig.services.unshift({
+        url: saltboxGatewayUrl,
+        env: {
+          api_base_path: "/",
+          ws_server_url: null,
+        },
+      });
+      loadModules(config);
     });
 };
 
