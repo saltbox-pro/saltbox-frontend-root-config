@@ -7,7 +7,7 @@ import { localeStore } from "./store/locale-store";
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
 let saltboxDiscoveryUrl = "/api/discovery/config";
-let saltboxGatewayUrl = "/static/gateway/index.js";
+let saltboxGatewayUrl = "/static/gateway";
 
 if (DEVELOPMENT && CONFIGURATION) {
   if (CONFIGURATION?.saltboxMainConfig) {
