@@ -52,6 +52,10 @@ const loadBase = (
       authStore.setUserConfig(config.auth_config);
       config.services.unshift({
         url: saltboxGatewayUrl,
+        env: {
+          api_base_path: "",
+          ws_server_url: null,
+        },
       });
       loadModules(config);
     });
