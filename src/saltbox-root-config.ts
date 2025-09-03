@@ -2,6 +2,7 @@ import { registerApplication, start } from "single-spa";
 import { authStore } from "./store/auth-store";
 import { containerTracker } from "./container-tracker";
 import { menuStore } from "./store/menu-store";
+import { pluginsStore } from "./store/plugins-store";
 import { localeStore } from "./store/locale-store";
 
 let saltboxMainConfig;
@@ -42,23 +43,23 @@ const loadBase = (
   if (mainConfig) {
     authStore.setUserConfig(mainConfig.auth_config);
     loadModules(mainConfig);
-    return;
-  }
-  fetch(saltboxDiscoveryUrl)
-    .then((response) => {
-      return response.json();
-    })
-    .then((config) => {
-      authStore.setUserConfig(config.auth_config);
-      config.services.unshift({
-        url: saltboxGatewayUrl,
-        env: {
-          api_base_path: "/",
-          ws_server_url: null,
-        },
+  } else {
+    fetch(saltboxDiscoveryUrl)
+      .then((response) => {
+        return response.json();
+      })
+      .then((config) => {
+        authStore.setUserConfig(config.auth_config);
+        config.services.unshift({
+          url: saltboxGatewayUrl,
+          env: {
+            api_base_path: "/",
+            ws_server_url: null,
+          },
+        });
+        loadModules(config);
       });
-      loadModules(config);
-    });
+  }
 };
 
 const loadModules = async (mainConfig: any) => {
@@ -68,22 +69,26 @@ const loadModules = async (mainConfig: any) => {
       module.url + "/index.js"
     )
       .then(async (impotedModule) => {
-        if (impotedModule.meta.settingsConfig) {
-          menuStore.addSettingsItem(impotedModule.meta.settingsConfig);
+        if (impotedModule.saltboxModule?.settingsConfig) {
+          menuStore.addSettingsItem(impotedModule.saltboxModule.settingsConfig);
         }
-        if (impotedModule.meta?.menuConfig) {
-          menuStore.addMenuItem(impotedModule.meta.menuConfig);
+        if (impotedModule.saltboxModule?.menuConfig) {
+          menuStore.addMenuItem(impotedModule.saltboxModule.menuConfig);
         }
-        impotedModule.meta.init(authStore, module.env, localeStore);
+        if (impotedModule.saltboxModule?.plugins) {
+          pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
+        }
+        if (impotedModule.saltboxModule?.init) {
+          impotedModule.saltboxModule.init(authStore, module.env, localeStore, pluginsStore);
+        }
         await containerTracker.waitForContainer("app-container");
+        console.log('impotedModule', impotedModule, impotedModule.saltboxModule.name, impotedModule.saltboxModule?.path);
         registerApplication({
-          name: impotedModule.meta.name,
+          name: impotedModule.saltboxModule.name,
           app: {
-            bootstrap: impotedModule.bootstrap,
-            mount: impotedModule.mount,
-            unmount: impotedModule.unmount,
+            ...impotedModule,
           },
-          activeWhen: [impotedModule.meta.path],
+          activeWhen: [impotedModule.saltboxModule?.path],
         });
       })
       .catch((error) =>
