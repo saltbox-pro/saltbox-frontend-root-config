@@ -84,9 +84,7 @@ const loadModules = async (mainConfig: any) => {
         await containerTracker.waitForContainer("app-container");
         registerApplication({
           name: impotedModule.saltboxModule.name,
-          app: {
-            ...impotedModule,
-          },
+          app: impotedModule.saltboxModule.singleSpaLifecycle,
           activeWhen: [impotedModule.saltboxModule?.path],
         });
       })
