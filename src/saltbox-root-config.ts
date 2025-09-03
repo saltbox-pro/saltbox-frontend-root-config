@@ -82,7 +82,6 @@ const loadModules = async (mainConfig: any) => {
           impotedModule.saltboxModule.init(authStore, module.env, localeStore, pluginsStore);
         }
         await containerTracker.waitForContainer("app-container");
-        console.log('impotedModule', impotedModule, impotedModule.saltboxModule.name, impotedModule.saltboxModule?.path);
         registerApplication({
           name: impotedModule.saltboxModule.name,
           app: {
