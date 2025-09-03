@@ -8,7 +8,13 @@ export class PluginsStore {
   }
 
   addPlugins(plugins: any[]) {
-    this.plugins = { ...this.plugins, ...plugins };
+    for (const plugin in plugins) {
+      if (this.plugins?.[plugin]) {
+        this.plugins[plugin].push(...plugins[plugin]);
+      } else {
+        this.plugins[plugin] = [...plugins[plugin]];
+      }
+    }
   }
 }
 
