@@ -43,23 +43,23 @@ const loadBase = (
   if (mainConfig) {
     authStore.setUserConfig(mainConfig.auth_config);
     loadModules(mainConfig);
-  } else {
-    fetch(saltboxDiscoveryUrl)
-      .then((response) => {
-        return response.json();
-      })
-      .then((config) => {
-        authStore.setUserConfig(config.auth_config);
-        config.services.unshift({
-          url: saltboxGatewayUrl,
-          env: {
-            api_base_path: "/",
-            ws_server_url: null,
-          },
-        });
-        loadModules(config);
-      });
+    return;
   }
+  fetch(saltboxDiscoveryUrl)
+    .then((response) => {
+      return response.json();
+    })
+    .then((config) => {
+      authStore.setUserConfig(config.auth_config);
+      config.services.unshift({
+        url: saltboxGatewayUrl,
+        env: {
+          api_base_path: "",
+          ws_server_url: null,
+        },
+      });
+      loadModules(config);
+    });
 };
 
 const loadModules = async (mainConfig: any) => {
