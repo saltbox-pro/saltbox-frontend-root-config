@@ -48,4 +48,5 @@
 3. Run commands on your local machine:
 
 `yarn config set '//dev.saltbox.pro/api/v4/packages/npm/:_authToken' '<token>'
-npm config set -- //dev.saltbox.pro/:_authToken=<token>`
+npm config set -- //dev.saltbox.pro/api/v4/projects/:_authToken=<token>
+npm config set -- //dev.saltbox.pro/api/v4/packages/npm/:_authToken=<token>`
