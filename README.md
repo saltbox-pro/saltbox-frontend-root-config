@@ -38,3 +38,14 @@
         "install:scheduler": "cd saltbox-frontend-scheduler && yarn"
     }
 }```
+
+### Generate Tokens For Private NPM registry
+
+1. Open page https://dev.saltbox.pro/-/user_settings/personal_access_tokens
+
+2. Add new token with `read_api`
+
+3. Run commands on your local machine:
+
+`yarn config set '//dev.saltbox.pro/api/v4/packages/npm/:_authToken' '<token>'
+npm config set -- //dev.saltbox.pro/:_authToken=<token>`
