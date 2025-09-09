@@ -12,10 +12,18 @@ export class LocaleStore {
 
   constructor() {
     makeAutoObservable(this);
+    const savedLocale = localStorage.getItem("currentLocale");
+    if (
+      savedLocale &&
+      Object.values(AppLocales).includes(savedLocale as AppLocales)
+    ) {
+      this.currentLocale = savedLocale as AppLocales;
+    }
   }
 
   setLocale(locale: AppLocales) {
     this.currentLocale = locale;
+    localStorage.setItem("currentLocale", locale);
   }
 }
 
