@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 export interface MenuItem {
+  priority: number;
   key: string;
   label: string;
   path?: string;
@@ -10,7 +11,15 @@ export interface MenuItem {
 
 export class MenuStore {
   menu: MenuItem[] = [];
-  settings: MenuItem[] = [];
+  settingsMenu: MenuItem[] = [];
+
+  get sortedMenu() {
+    return this.menu.slice().sort((a, b) => a.priority - b.priority);
+  }
+
+  get sortedSettingsMenu() {
+    return this.settingsMenu.slice().sort((a, b) => a.priority - b.priority);
+  }
 
   constructor() {
     makeAutoObservable(this);
@@ -21,7 +30,7 @@ export class MenuStore {
   }
 
   addSettingsItem(menuItem: MenuItem) {
-    this.settings.push(menuItem);
+    this.settingsMenu.push(menuItem);
   }
 }
 
