@@ -2,6 +2,7 @@ const { merge } = require("webpack-merge");
 const webpack = require('webpack');
 const singleSpaDefaults = require("webpack-config-single-spa-ts");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const path = require('path');
 const fs = require('fs');
 
@@ -74,6 +75,11 @@ module.exports = (webpackConfigEnv, argv) => {
         },
       }),
       new webpack.DefinePlugin(definePluginConfig),
+      new CopyPlugin({
+        patterns: [
+          { from: "public" },
+        ],
+      }),
     ],
   });
 
