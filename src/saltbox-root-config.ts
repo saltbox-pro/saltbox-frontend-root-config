@@ -79,7 +79,7 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(authStore, module.env, localeStore, pluginsStore);
+          impotedModule.saltboxModule.init(authStore, mainConfig.services, localeStore, pluginsStore);
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({

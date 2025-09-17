@@ -32,5 +32,6 @@ export const saltboxMainConfig = {
       "api_base_path": "http://localhost/api/inventory",
       "ws_server_url": null
     }
-  },],
+  },
+  ],
 }
