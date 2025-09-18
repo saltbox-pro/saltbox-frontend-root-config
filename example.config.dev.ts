@@ -33,5 +33,13 @@ export const saltboxMainConfig = {
       "ws_server_url": null
     }
   },
+  {
+    "service_name": "gateway",
+    "url": "http://localhost:4203",
+    "env": {
+      "api_base_path": "http://localhost",
+      "ws_server_url": null
+    }
+  },
   ],
 }
