@@ -4,7 +4,7 @@ export const saltboxDiscoveryUrl = "/api/discovery/config";
 
 export const saltboxMainConfig = {
   "auth_config": {
-    "authority": "http://localhost/auth/keycloak/realms/salt.box",
+    "authority": "https://localhost/auth/keycloak/realms/salt.box",
     "client_id": "saltbox_core",
     "redirect_uri": "http://localhost:4200",
     "client_secret": "PWldvmaA9IW1tHLP",
@@ -13,7 +13,7 @@ export const saltboxMainConfig = {
     "service_name": "core",
     "url": "http://localhost:4202",
     "env": {
-      "api_base_path": "http://localhost/api/core",
+      "api_base_path": "https://localhost/api/core",
       "ws_server_url": "ws://localhost/api/core"
     }
   },
@@ -21,7 +21,7 @@ export const saltboxMainConfig = {
     "service_name": "scheduler",
     "url": "http://localhost:4204",
     "env": {
-      "api_base_path": "http://localhost/api/scheduler",
+      "api_base_path": "https://localhost/api/scheduler",
       "ws_server_url": null
     }
   },
@@ -29,7 +29,7 @@ export const saltboxMainConfig = {
     "service_name": "inventory",
     "url": "http://localhost:4205",
     "env": {
-      "api_base_path": "http://localhost/api/inventory",
+      "api_base_path": "https://localhost/api/inventory",
       "ws_server_url": null
     }
   },
@@ -37,7 +37,7 @@ export const saltboxMainConfig = {
     "service_name": "gateway",
     "url": "http://localhost:4203",
     "env": {
-      "api_base_path": "http://localhost",
+      "api_base_path": "https://localhost",
       "ws_server_url": null
     }
   },
