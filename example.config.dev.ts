@@ -14,7 +14,7 @@ export const saltboxMainConfig = {
     "url": "http://localhost:4202",
     "env": {
       "api_base_path": "https://localhost/api/core",
-      "ws_server_url": "ws://localhost/api/core"
+      "ws_server_url": "wss://localhost/api/core"
     }
   },
   {
