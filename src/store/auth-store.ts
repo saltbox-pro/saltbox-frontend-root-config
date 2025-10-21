@@ -68,22 +68,6 @@ export class AuthStore {
     makeObservable(this);
   }
 
-  @action private async initialize() {
-    if (!this.userManager) return;
-    try {
-      const user = await this.userManager.getUser();
-      runInAction(() => {
-        this.user = user || undefined;
-        this.isLoading = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.error = error as Error;
-        this.isLoading = false;
-      });
-    }
-  }
-
   @action async signIn(redirectURI?: string) {
     if (!this.userManager) return;
     try {
