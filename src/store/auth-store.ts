@@ -1,16 +1,5 @@
-import {
-  action,
-  computed,
-  makeObservable,
-  observable,
-  runInAction,
-} from "mobx";
-import {
-  User,
-  UserManager,
-  UserManagerSettings,
-  WebStorageStateStore,
-} from "oidc-client-ts";
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { User, UserManager, UserManagerSettings, WebStorageStateStore } from "oidc-client-ts";
 
 const userStore = new WebStorageStateStore({ store: window.localStorage });
 
@@ -107,9 +96,7 @@ export class AuthStore {
     if (!this.userManager || this.userPromise) return;
     this.isLoading = true;
     return new Promise((resolve, reject) => {
-      this.userPromise = (
-        this.userManager as UserManager
-      ).signinRedirectCallback();
+      this.userPromise = (this.userManager as UserManager).signinRedirectCallback();
       this.userPromise
         .then((user) => {
           runInAction(() => {

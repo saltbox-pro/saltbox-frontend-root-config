@@ -7,10 +7,7 @@ export interface ContainerState {
 export interface ContainerTracker {
   waitForContainer: (containerId: string) => Promise<Element>;
   getContainerState: (containerId: string) => ContainerState;
-  subscribe: (
-    containerId: string,
-    callback: (state: ContainerState) => void
-  ) => () => void;
+  subscribe: (containerId: string, callback: (state: ContainerState) => void) => () => void;
 }
 
 class ContainerTrackerImpl implements ContainerTracker {
@@ -116,10 +113,7 @@ class ContainerTrackerImpl implements ContainerTracker {
     );
   }
 
-  subscribe(
-    containerId: string,
-    callback: (state: ContainerState) => void
-  ): () => void {
+  subscribe(containerId: string, callback: (state: ContainerState) => void): () => void {
     if (!this.subscribers.has(containerId)) {
       this.subscribers.set(containerId, new Set());
     }
