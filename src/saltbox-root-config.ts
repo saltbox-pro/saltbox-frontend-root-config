@@ -1,9 +1,10 @@
 import { registerApplication, start } from "single-spa";
-import { authStore } from "./store/auth-store";
+
 import { containerTracker } from "./container-tracker";
+import { authStore } from "./store/auth-store";
+import { localeStore } from "./store/locale-store";
 import { menuStore } from "./store/menu-store";
 import { pluginsStore } from "./store/plugins-store";
-import { localeStore } from "./store/locale-store";
 
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
@@ -79,7 +80,12 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(authStore, mainConfig.services, localeStore, pluginsStore);
+          impotedModule.saltboxModule.init(
+            authStore,
+            mainConfig.services,
+            localeStore,
+            pluginsStore
+          );
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({
@@ -88,9 +94,7 @@ const loadModules = async (mainConfig: any) => {
           activeWhen: [impotedModule.saltboxModule?.path],
         });
       })
-      .catch((error) =>
-        console.error("Failed to wait for app container:", error)
-      )
+      .catch((error) => console.error("Failed to wait for app container:", error))
   );
 };
 
