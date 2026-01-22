@@ -4,5 +4,7 @@ build/
 coverage/
 .DS_Store
 .env*
-*.log 
+*.log
 config.dev.ts
+
+.idea
