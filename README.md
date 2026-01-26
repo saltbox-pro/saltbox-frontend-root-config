@@ -5,7 +5,7 @@
 
 ### Example package.json for multi-repos
 
-```{
+````{
     "name": "saltbox-frontend-multirepo",
     "version": "0.0.0",
     "private": true,
@@ -50,3 +50,22 @@
 `yarn config set '//dev.saltbox.pro/api/v4/packages/npm/:_authToken' '<token>'
 npm config set -- //dev.saltbox.pro/api/v4/projects/:_authToken=<token>
 npm config set -- //dev.saltbox.pro/api/v4/packages/npm/:_authToken=<token>`
+
+
+### FAQ:
+
+1. **ENOSPC: System limit for number of file watchers reached**
+
+   Linux has a limit on inotify watchers. To fix:
+
+   ```bash
+   # Temporary (until reboot)
+   sudo sysctl fs.inotify.max_user_watches=524288
+
+   # Permanent
+   echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
+   sudo sysctl -p
+
+   # Check current value
+   cat /proc/sys/fs/inotify/max_user_watches
+````
