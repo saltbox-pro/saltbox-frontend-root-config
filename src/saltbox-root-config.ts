@@ -64,7 +64,8 @@ const loadBase = (
 };
 
 const loadModules = async (mainConfig: any) => {
-  mainConfig.services.map((module) =>
+  const availableServices = mainConfig.services.filter((service) => service.is_available !== false);
+  availableServices.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
       module.url + "/index.js"
@@ -80,12 +81,7 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(
-            authStore,
-            mainConfig.services,
-            localeStore,
-            pluginsStore
-          );
+          impotedModule.saltboxModule.init(authStore, availableServices, localeStore, pluginsStore);
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({
