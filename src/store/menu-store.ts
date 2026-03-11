@@ -5,6 +5,7 @@ export interface MenuItem {
   key: string;
   label: string;
   path?: string;
+  href?: string;
   children?: MenuItem[];
   icon?: string;
 }
