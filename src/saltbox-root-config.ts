@@ -6,42 +6,6 @@ import { localeStore } from "./store/locale-store";
 import { menuStore } from "./store/menu-store";
 import { pluginsStore } from "./store/plugins-store";
 
-type ModuleState = "active" | "disabled" | "unavailable" | "disconnected";
-
-type ModuleDefinition = {
-  serviceName: string;
-  routePrefix: string;
-};
-
-const moduleDefinitions: ModuleDefinition[] = [
-  { serviceName: "core", routePrefix: "/core" },
-  { serviceName: "scheduler", routePrefix: "/scheduler" },
-  { serviceName: "inventory", routePrefix: "/inventory" },
-  { serviceName: "migration", routePrefix: "/scenarios" },
-  { serviceName: "gateway", routePrefix: "/gateway" },
-  { serviceName: "metric", routePrefix: "/metric" },
-];
-
-const getServiceEnabledStatus = (service: any): boolean =>
-  service.enabled !== false && service.is_enabled !== false;
-
-const getServiceAvailableStatus = (service: any): boolean => service.is_available !== false;
-
-const getServiceState = (service: any): ModuleState => {
-  if (!getServiceEnabledStatus(service)) {
-    return "disabled";
-  }
-  if (!getServiceAvailableStatus(service)) {
-    return "unavailable";
-  }
-  return "active";
-};
-
-const getModuleDefinitionByServiceName = (
-  serviceName: string | undefined
-): ModuleDefinition | undefined =>
-  moduleDefinitions.find((moduleDefinition) => moduleDefinition.serviceName === serviceName);
-
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
 let saltboxDiscoveryUrl = "/api/discovery/config";
@@ -100,23 +64,8 @@ const loadBase = (
 };
 
 const loadModules = async (mainConfig: any) => {
-  const serviceStateMap = new Map<string, ModuleState>();
-  mainConfig.services.forEach((service) => {
-    serviceStateMap.set(service.service_name, getServiceState(service));
-  });
-
-  menuStore.setModuleAccessRules(
-    moduleDefinitions.map((moduleDefinition) => ({
-      routePrefix: moduleDefinition.routePrefix,
-      state: serviceStateMap.get(moduleDefinition.serviceName) ?? "disconnected",
-    }))
-  );
-
-  const activeServices = mainConfig.services.filter(
-    (service) => getServiceEnabledStatus(service) && getServiceAvailableStatus(service)
-  );
-
-  activeServices.map((module) =>
+  const availableServices = mainConfig.services.filter((service) => service.is_available !== false);
+  availableServices.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
       module.url + "/index.js"
@@ -132,7 +81,7 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(authStore, activeServices, localeStore, pluginsStore);
+          impotedModule.saltboxModule.init(authStore, availableServices, localeStore, pluginsStore);
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({
@@ -141,13 +90,7 @@ const loadModules = async (mainConfig: any) => {
           activeWhen: [impotedModule.saltboxModule?.path],
         });
       })
-      .catch((error) => {
-        const moduleDefinition = getModuleDefinitionByServiceName(module.service_name);
-        if (moduleDefinition) {
-          menuStore.setModuleStateByRoutePrefix(moduleDefinition.routePrefix, "unavailable");
-        }
-        console.error("Failed to load module:", error);
-      })
+      .catch((error) => console.error("Failed to wait for app container:", error))
   );
 };
 
