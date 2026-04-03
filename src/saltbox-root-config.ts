@@ -65,12 +65,16 @@ const loadBase = (
 
 const loadModules = async (mainConfig: any) => {
   const availableServices = mainConfig.services.filter((service) => service.is_available !== false);
-  availableServices.map((module) =>
+
+  availableServices.forEach((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
       module.url + "/index.js"
     )
       .then(async (impotedModule) => {
+        if (impotedModule.saltboxModule?.path) {
+          menuStore.addAvailableModuleRoute(impotedModule.saltboxModule.path);
+        }
         if (impotedModule.saltboxModule?.settingsConfig) {
           menuStore.addSettingsItem(impotedModule.saltboxModule.settingsConfig);
         }
