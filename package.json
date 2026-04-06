@@ -1,6 +1,6 @@
 {
   "name": "saltbox-frontend-root-config",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "Apache-2.0",
   "scripts": {
     "start": "webpack serve --port 4200 --env isLocal --mode=development",
