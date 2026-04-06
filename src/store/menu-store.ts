@@ -14,6 +14,7 @@ export class MenuStore {
   menu: MenuItem[] = [];
   settingsMenu: MenuItem[] = [];
   availableModuleRoutes: string[] = ["/gateway"];
+  isModulesLoading = true;
 
   get sortedMenu() {
     return this.menu.slice().sort((a, b) => a.priority - b.priority);
@@ -37,6 +38,10 @@ export class MenuStore {
 
   setAvailableModuleRoutes(routes: string[]) {
     this.availableModuleRoutes = Array.from(new Set(routes));
+  }
+
+  setModulesLoading(isLoading: boolean) {
+    this.isModulesLoading = isLoading;
   }
 
   addAvailableModuleRoute(route: string) {

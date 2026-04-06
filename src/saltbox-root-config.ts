@@ -64,9 +64,10 @@ const loadBase = (
 };
 
 const loadModules = async (mainConfig: any) => {
+  menuStore.setModulesLoading(true);
   const availableServices = mainConfig.services.filter((service) => service.is_available !== false);
 
-  availableServices.forEach((module) =>
+  const moduleLoadPromises = availableServices.map((module) =>
     import(
       /* webpackIgnore: true */ // @ts-ignore-next
       module.url + "/index.js"
@@ -96,6 +97,9 @@ const loadModules = async (mainConfig: any) => {
       })
       .catch((error) => console.error("Failed to wait for app container:", error))
   );
+
+  await Promise.allSettled(moduleLoadPromises);
+  menuStore.setModulesLoading(false);
 };
 
 loadBase(saltboxBaseUrl, saltboxDiscoveryUrl, saltboxMainConfig);
