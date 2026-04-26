@@ -6,6 +6,28 @@ import { localeStore } from "./store/locale-store";
 import { menuStore } from "./store/menu-store";
 import { pluginsStore } from "./store/plugins-store";
 
+const handleChunkLoadError = (message: string) => {
+  if (
+    !/Loading chunk .* failed|ChunkLoadError|Failed to fetch dynamically imported module/i.test(
+      message
+    )
+  ) {
+    return;
+  }
+  const key = "sbx_chunk_reload_ts";
+  const last = Number(sessionStorage.getItem(key) || 0);
+  if (Date.now() - last > 10_000) {
+    sessionStorage.setItem(key, String(Date.now()));
+    window.location.reload();
+  }
+};
+window.addEventListener("error", (event) => handleChunkLoadError(event.message || ""));
+window.addEventListener("unhandledrejection", (event) => {
+  const reason = event.reason;
+  const message = typeof reason === "string" ? reason : reason?.message || "";
+  handleChunkLoadError(message);
+});
+
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
 let saltboxDiscoveryUrl = "/api/discovery/config";

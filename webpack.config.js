@@ -1,35 +1,61 @@
-const { merge } = require("webpack-merge");
-const webpack = require('webpack');
-const singleSpaDefaults = require("webpack-config-single-spa-ts");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const fs = require("fs");
+const path = require("path");
+
 const CopyPlugin = require("copy-webpack-plugin");
-const path = require('path');
-const fs = require('fs');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
+const singleSpaDefaults = require("webpack-config-single-spa-ts");
+const { merge } = require("webpack-merge");
+
+class EmitEntryShimPlugin {
+  constructor(opts) {
+    this.shimName = opts.shimName;
+    this.entryName = opts.entryName || "main";
+  }
+  apply(compiler) {
+    const pluginName = "EmitEntryShimPlugin";
+    compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
+      compilation.hooks.processAssets.tap(
+        { name: pluginName, stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE },
+        () => {
+          const entrypoint = compilation.entrypoints.get(this.entryName);
+          if (!entrypoint) return;
+          const entryChunk = entrypoint.getEntrypointChunk();
+          const jsFile = [...entryChunk.files].find((f) => f.endsWith(".js"));
+          if (!jsFile || jsFile === this.shimName) return;
+          const shim = `export * from "./${jsFile}";\n`;
+          compilation.emitAsset(this.shimName, new compiler.webpack.sources.RawSource(shim));
+        }
+      );
+    });
+  }
+}
 
 const loadConfiguration = () => {
-  const configPath = path.resolve(__dirname, 'config.dev.ts');
+  const configPath = path.resolve(__dirname, "config.dev.ts");
 
   try {
     if (fs.existsSync(configPath)) {
-      delete require.cache[require.resolve('./config.dev.ts')];
+      delete require.cache[require.resolve("./config.dev.ts")];
 
-      const config = require('./config.dev.ts');
+      const config = require("./config.dev.ts");
 
       return {
         saltboxBaseUrl: config.saltboxBaseUrl,
         saltboxMainConfig: config.saltboxMainConfig,
-        saltboxDiscoveryUrl: config.saltboxDiscoveryUrl
+        saltboxDiscoveryUrl: config.saltboxDiscoveryUrl,
       };
     }
     return null;
   } catch (error) {
-    console.warn('Ошибка при загрузке config.dev.ts:', error.message);
+    console.warn("Ошибка при загрузке config.dev.ts:", error.message);
     return null;
   }
 };
 
 module.exports = (webpackConfigEnv, argv) => {
   const orgName = "saltbox";
+  const isProd = argv.mode === "production";
 
   const defaultConfig = singleSpaDefaults({
     orgName,
@@ -42,8 +68,8 @@ module.exports = (webpackConfigEnv, argv) => {
   const configuration = loadConfiguration();
 
   const definePluginConfig = {
-    DEVELOPMENT: argv.mode === 'development',
-    PRODUCTION: argv.mode === 'production',
+    DEVELOPMENT: argv.mode === "development",
+    PRODUCTION: isProd,
   };
 
   if (configuration) {
@@ -53,15 +79,41 @@ module.exports = (webpackConfigEnv, argv) => {
   const config = merge(defaultConfig, {
     devServer: {
       proxy: {
-        '/api': {
-          target: 'http://localhost',
+        "/api": {
+          target: "http://localhost",
           changeOrigin: true,
           secure: false,
         },
-        '/auth': {
-          target: 'http://localhost',
+        "/auth": {
+          target: "http://localhost",
           changeOrigin: true,
           secure: false,
+        },
+      },
+    },
+    output: {
+      filename: isProd ? "saltbox-root-config.[contenthash].js" : "saltbox-root-config.js",
+      chunkFilename: "[name].[contenthash].js",
+      assetModuleFilename: "assets/[name].[contenthash][ext]",
+    },
+    optimization: {
+      moduleIds: "deterministic",
+      chunkIds: "deterministic",
+      runtimeChunk: false,
+      splitChunks: {
+        chunks: "async",
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendors",
+            priority: -10,
+            reuseExistingChunk: true,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
         },
       },
     },
@@ -76,11 +128,10 @@ module.exports = (webpackConfigEnv, argv) => {
       }),
       new webpack.DefinePlugin(definePluginConfig),
       new CopyPlugin({
-        patterns: [
-          { from: "public" },
-        ],
+        patterns: [{ from: "public" }],
       }),
-    ],
+      isProd && new EmitEntryShimPlugin({ shimName: "saltbox-root-config.js" }),
+    ].filter(Boolean),
   });
 
   config.externals = [];
