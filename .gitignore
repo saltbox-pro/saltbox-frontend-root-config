@@ -7,4 +7,5 @@ coverage/
 *.log
 config.dev.ts
 
+/.gitlab-ci-local
 .idea
