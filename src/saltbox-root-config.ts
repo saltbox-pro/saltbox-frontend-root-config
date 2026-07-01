@@ -98,6 +98,9 @@ const loadModules = async (mainConfig: any) => {
         if (impotedModule.saltboxModule?.path) {
           menuStore.addAvailableModuleRoute(impotedModule.saltboxModule.path);
         }
+        if (impotedModule.saltboxModule?.fullBleed && impotedModule.saltboxModule?.path) {
+          menuStore.addFullBleedModuleRoute(impotedModule.saltboxModule.path);
+        }
         if (impotedModule.saltboxModule?.settingsConfig) {
           menuStore.addSettingsItem(impotedModule.saltboxModule.settingsConfig);
         }

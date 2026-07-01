@@ -14,6 +14,7 @@ export class MenuStore {
   menu: MenuItem[] = [];
   settingsMenu: MenuItem[] = [];
   availableModuleRoutes: string[] = ["/gateway"];
+  fullBleedModuleRoutes: string[] = [];
   isModulesLoading = true;
 
   get sortedMenu() {
@@ -52,6 +53,14 @@ export class MenuStore {
     this.setAvailableModuleRoutes([...this.availableModuleRoutes, route]);
   }
 
+  addFullBleedModuleRoute(route: string) {
+    if (!route) {
+      return;
+    }
+
+    this.fullBleedModuleRoutes = Array.from(new Set([...this.fullBleedModuleRoutes, route]));
+  }
+
   private getMatchedRoute(pathname: string, routes: string[]): string | null {
     const matchedRoutes = routes
       .filter((route) => pathname === route || pathname.startsWith(`${route}/`))
@@ -62,6 +71,10 @@ export class MenuStore {
 
   isAvailableModulePath(pathname: string): boolean {
     return this.getMatchedRoute(pathname, this.availableModuleRoutes) !== null;
+  }
+
+  isFullBleedModulePath(pathname: string): boolean {
+    return this.getMatchedRoute(pathname, this.fullBleedModuleRoutes) !== null;
   }
 }
 
