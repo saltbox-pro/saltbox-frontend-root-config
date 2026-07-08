@@ -1,6 +1,8 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { User, UserManager, UserManagerSettings, WebStorageStateStore } from "oidc-client-ts";
 
+import { localeStore } from "./locale-store";
+
 const userStore = new WebStorageStateStore({ store: window.localStorage });
 
 export class AuthStore {
@@ -61,7 +63,12 @@ export class AuthStore {
     if (!this.userManager) return;
     try {
       this.isLoading = true;
-      await this.userManager.signinRedirect({ redirect_uri: redirectURI });
+      await this.userManager.signinRedirect({
+        redirect_uri: redirectURI,
+        extraQueryParams: {
+          ui_locales: localeStore.currentLocale,
+        },
+      });
     } catch (error) {
       console.error("AuthStore.signIn error", error);
       runInAction(() => {
