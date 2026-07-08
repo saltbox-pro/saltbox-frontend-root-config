@@ -12,6 +12,7 @@ const PUBLIC_DIR = path.resolve(__dirname, "public");
 
 const FAVICON_SOURCES = {
   svg: "favicon.svg",
+  ico: "favicon.ico",
   png: "favicon.png",
   png32: "favicon-32.png",
   png192: "favicon-192.png",
@@ -162,6 +163,7 @@ module.exports = (webpackConfigEnv, argv) => {
             globOptions: {
               ignore: [
                 "**/favicon.svg",
+                "**/favicon.ico",
                 "**/favicon.png",
                 "**/favicon-*.png",
                 "**/apple-touch-icon.png",
@@ -172,6 +174,10 @@ module.exports = (webpackConfigEnv, argv) => {
             from: path.join(PUBLIC_DIR, fileName),
             to: favicons[key],
           })),
+          {
+            from: path.join(PUBLIC_DIR, "favicon.ico"),
+            to: "favicon.ico",
+          },
         ],
       }),
       isProd && new EmitEntryShimPlugin({ shimName: "saltbox-root-config.js" }),
