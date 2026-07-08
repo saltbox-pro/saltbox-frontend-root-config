@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
@@ -6,6 +7,31 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const singleSpaDefaults = require("webpack-config-single-spa-ts");
 const { merge } = require("webpack-merge");
+
+const PUBLIC_DIR = path.resolve(__dirname, "public");
+
+const FAVICON_SOURCES = {
+  svg: "favicon.svg",
+  png: "favicon.png",
+  png32: "favicon-32.png",
+  png192: "favicon-192.png",
+  png512: "favicon-512.png",
+  apple: "apple-touch-icon.png",
+};
+
+const hashFile = (filePath) =>
+  crypto.createHash("md5").update(fs.readFileSync(filePath)).digest("hex").slice(0, 8);
+
+const buildFaviconAssets = () =>
+  Object.fromEntries(
+    Object.entries(FAVICON_SOURCES).map(([key, fileName]) => {
+      const ext = path.extname(fileName);
+      const base = path.basename(fileName, ext);
+      const hashedName = `${base}.${hashFile(path.join(PUBLIC_DIR, fileName))}${ext}`;
+
+      return [key, hashedName];
+    })
+  );
 
 class EmitEntryShimPlugin {
   constructor(opts) {
@@ -66,6 +92,7 @@ module.exports = (webpackConfigEnv, argv) => {
   });
 
   const configuration = loadConfiguration();
+  const favicons = buildFaviconAssets();
 
   const definePluginConfig = {
     DEVELOPMENT: argv.mode === "development",
@@ -124,11 +151,28 @@ module.exports = (webpackConfigEnv, argv) => {
         templateParameters: {
           isLocal: webpackConfigEnv && webpackConfigEnv.isLocal,
           orgName,
+          favicons,
         },
       }),
       new webpack.DefinePlugin(definePluginConfig),
       new CopyPlugin({
-        patterns: [{ from: "public" }],
+        patterns: [
+          {
+            from: "public",
+            globOptions: {
+              ignore: [
+                "**/favicon.svg",
+                "**/favicon.png",
+                "**/favicon-*.png",
+                "**/apple-touch-icon.png",
+              ],
+            },
+          },
+          ...Object.entries(FAVICON_SOURCES).map(([key, fileName]) => ({
+            from: path.join(PUBLIC_DIR, fileName),
+            to: favicons[key],
+          })),
+        ],
       }),
       isProd && new EmitEntryShimPlugin({ shimName: "saltbox-root-config.js" }),
     ].filter(Boolean),
