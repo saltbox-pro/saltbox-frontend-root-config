@@ -16,11 +16,13 @@ export class LocaleStore {
     if (savedLocale && Object.values(AppLocales).includes(savedLocale as AppLocales)) {
       this.currentLocale = savedLocale as AppLocales;
     }
+    document.documentElement.lang = this.currentLocale;
   }
 
   setLocale(locale: AppLocales) {
     this.currentLocale = locale;
     localStorage.setItem("currentLocale", locale);
+    document.documentElement.lang = locale;
   }
 }
 
