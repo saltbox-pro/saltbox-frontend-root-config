@@ -50,5 +50,13 @@ export const saltboxMainConfig = {
         ws_server_url: "wss://192.168.1.222/api/migration",
       },
     },
+    {
+      service_name: "client-toolkit",
+      url: "http://localhost:4209",
+      env: {
+        api_base_path: "https://localhost/api/client-toolkit",
+        ws_server_url: null,
+      },
+    },
   ],
 };
