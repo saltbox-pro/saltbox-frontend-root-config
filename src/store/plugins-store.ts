@@ -1,18 +1,25 @@
 import { makeAutoObservable } from "mobx";
 
+type PluginsBySlot = Record<string, unknown[]>;
+
 export class PluginsStore {
-  plugins: Object = {};
+  plugins: PluginsBySlot = {};
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  addPlugins(plugins: any[]) {
-    for (const plugin in plugins) {
-      if (this.plugins?.[plugin]) {
-        this.plugins[plugin].push(...plugins[plugin]);
+  addPlugins(plugins: PluginsBySlot) {
+    for (const slot in plugins) {
+      const slotPlugins = plugins[slot];
+      if (!slotPlugins) {
+        continue;
+      }
+
+      if (this.plugins[slot]) {
+        this.plugins[slot] = [...this.plugins[slot], ...slotPlugins];
       } else {
-        this.plugins[plugin] = [...plugins[plugin]];
+        this.plugins[slot] = [...slotPlugins];
       }
     }
   }
