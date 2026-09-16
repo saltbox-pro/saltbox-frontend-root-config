@@ -19,13 +19,6 @@ export class LocaleStore {
     document.documentElement.lang = this.currentLocale;
   }
 
-  /**
-   * Смена языка всегда перезагружает страницу (SBX-837): часть UI не умеет
-   * переключать локаль в рантайме (Monaco-редактор в common, Analytics/Superset
-   * со статичным i18n + bootstrap). Локаль персистится в localStorage и читается
-   * в конструкторе при загрузке, так что после reload все приложения поднимутся
-   * уже с новым языком.
-   */
   setLocale(locale: AppLocales) {
     if (locale === this.currentLocale) return;
     this.currentLocale = locale;
