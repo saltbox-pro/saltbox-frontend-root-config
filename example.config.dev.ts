@@ -29,6 +29,7 @@ export const saltboxMainConfig = {
     {
       service_name: "inventory",
       url: "http://localhost:4205",
+      is_available: false,
       env: {
         api_base_path: "https://localhost/api/inventory",
         ws_server_url: null,

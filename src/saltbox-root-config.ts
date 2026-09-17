@@ -87,7 +87,11 @@ const loadBase = (
 
 const loadModules = async (mainConfig: any) => {
   menuStore.setModulesLoading(true);
-  const availableServices = mainConfig.services.filter((service) => service.is_available !== false);
+  const FRONTEND_DISABLED_MODULES = new Set(["inventory"]);
+  const availableServices = mainConfig.services.filter(
+    (service) =>
+      service.is_available !== false && !FRONTEND_DISABLED_MODULES.has(service.service_name)
+  );
 
   const moduleLoadPromises = availableServices.map((module) =>
     import(
