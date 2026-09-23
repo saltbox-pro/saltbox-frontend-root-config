@@ -106,7 +106,9 @@ const loadModules = async (mainConfig: any) => {
           menuStore.addFullBleedModuleRoute(impotedModule.saltboxModule.path);
         }
         if (impotedModule.saltboxModule?.settingsConfig) {
-          menuStore.addSettingsItem(impotedModule.saltboxModule.settingsConfig);
+          [impotedModule.saltboxModule.settingsConfig].flat().forEach((settingsItem) => {
+            menuStore.addSettingsItem(settingsItem);
+          });
         }
         if (impotedModule.saltboxModule?.menuConfig) {
           menuStore.addMenuItem(impotedModule.saltboxModule.menuConfig);

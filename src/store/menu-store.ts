@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 export interface MenuItem {
   priority: number;
   key: string;
-  label: string;
+  label: string | Record<string, string>;
   path?: string;
   href?: string;
   additionalActivePaths?: string[];

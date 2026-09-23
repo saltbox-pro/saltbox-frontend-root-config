@@ -59,5 +59,12 @@ export const saltboxMainConfig = {
         ws_server_url: null,
       },
     },
+    {
+      service_name: "audit",
+      env: {
+        api_base_path: "https://localhost/api/audit",
+        ws_server_url: null,
+      },
+    },
   ],
 };
