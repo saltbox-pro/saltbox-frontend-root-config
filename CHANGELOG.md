@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Audit microfrontend registered in the root config (service entry, menu
+  locale, and dev example config).
+- Client Toolkit added to the local root-config setup.
+
+### Changed
+- Document `lang` attribute synced with the current locale; page now reloads
+  on locale change.
+- Inventory frontend module temporarily disabled: it is not loaded even when
+  the gateway marks it available (also reflected in the local example config).
+
+### Fixed
+- MobX reactivity bug in `PluginsStore.addPlugins`.
+
 ## [0.1.0] - 2025-09-30
 
 ### Added
