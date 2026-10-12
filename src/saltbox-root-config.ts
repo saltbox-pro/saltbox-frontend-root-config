@@ -75,6 +75,7 @@ const loadBase = (
     .then((config) => {
       authStore.setUserConfig(config.auth_config);
       config.services.unshift({
+        service_name: "gateway",
         url: saltboxGatewayUrl,
         env: {
           api_base_path: "",
