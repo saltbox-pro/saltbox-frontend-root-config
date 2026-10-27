@@ -3,7 +3,7 @@ import { registerApplication, start } from "single-spa";
 import { containerTracker } from "./container-tracker";
 import { authStore } from "./store/auth-store";
 import { localeStore } from "./store/locale-store";
-import { menuStore } from "./store/menu-store";
+import { createMenuLayoutPort, menuStore } from "./store/menu-store";
 import { pluginsStore } from "./store/plugins-store";
 
 const handleChunkLoadError = (message: string) => {
@@ -27,6 +27,8 @@ window.addEventListener("unhandledrejection", (event) => {
   const message = typeof reason === "string" ? reason : reason?.message || "";
   handleChunkLoadError(message);
 });
+
+const menuLayoutPort = createMenuLayoutPort(menuStore);
 
 let saltboxMainConfig;
 let saltboxBaseUrl = "/static/base/index.js";
@@ -118,7 +120,13 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(authStore, availableServices, localeStore, pluginsStore);
+          impotedModule.saltboxModule.init(
+            authStore,
+            availableServices,
+            localeStore,
+            pluginsStore,
+            menuLayoutPort
+          );
         }
         await containerTracker.waitForContainer("app-container");
         registerApplication({
@@ -132,6 +140,7 @@ const loadModules = async (mainConfig: any) => {
 
   await Promise.allSettled(moduleLoadPromises);
   menuStore.setModulesLoading(false);
+  menuStore.resolveLayoutWithoutLoader();
 };
 
 loadBase(saltboxBaseUrl, saltboxDiscoveryUrl, saltboxMainConfig);
