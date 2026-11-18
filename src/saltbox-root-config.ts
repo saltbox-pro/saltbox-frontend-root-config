@@ -120,7 +120,7 @@ const loadModules = async (mainConfig: any) => {
           pluginsStore.addPlugins(impotedModule.saltboxModule.plugins);
         }
         if (impotedModule.saltboxModule?.init) {
-          impotedModule.saltboxModule.init(
+          await impotedModule.saltboxModule.init(
             authStore,
             availableServices,
             localeStore,
